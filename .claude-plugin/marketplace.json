@@ -1,0 +1,35 @@
+{
+  "name": "claude-skills",
+  "id": "claude-skills",
+  "owner": {
+    "name": "Orlando Molina",
+    "url": "https://github.com/ojesusmp"
+  },
+  "metadata": {
+    "description": "Orlando's Claude Code skills marketplace — line-check and future skills, distributed via the native plugin system.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "line-check",
+      "source": "./plugins/line-check",
+      "description": "Per-line audit skill catching shell continuation-prompt traps and the SSH/tar bug class across PowerShell, bash, Python, Rust, C, and TypeScript. 5 checks + 6-item Pilot Pre-Send Checklist.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Orlando Molina",
+        "url": "https://github.com/ojesusmp"
+      },
+      "keywords": [
+        "code-quality",
+        "linter",
+        "shell",
+        "powershell",
+        "bash",
+        "verification",
+        "anti-slop",
+        "karpathy"
+      ],
+      "category": "code-quality"
+    }
+  ]
+}

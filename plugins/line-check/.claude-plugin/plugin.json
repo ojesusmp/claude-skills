@@ -1,0 +1,23 @@
+{
+  "name": "line-check",
+  "description": "Per-line audit skill catching shell continuation-prompt traps and the SSH/tar bug class across PowerShell, bash, Python, Rust, C, and TypeScript. 5 checks + 6-item Pilot Pre-Send Checklist. Companion to karpathy-guidelines, operating at line granularity.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Orlando Molina",
+    "url": "https://github.com/ojesusmp"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/ojesusmp/claude-skills/tree/main/plugins/line-check",
+  "repository": "https://github.com/ojesusmp/claude-skills",
+  "keywords": [
+    "code-quality",
+    "linter",
+    "shell",
+    "powershell",
+    "bash",
+    "verification",
+    "anti-slop",
+    "karpathy"
+  ],
+  "skills": ["./skills/line-check"]
+}
