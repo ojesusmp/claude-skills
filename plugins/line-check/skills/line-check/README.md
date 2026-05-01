@@ -6,6 +6,8 @@
 [![Skill](https://img.shields.io/badge/Claude%20Code-Skill-7c3aed)](#install)
 [![Version](https://img.shields.io/badge/version-1.0.0-green)](./CHANGELOG.md)
 
+Built by **Orlando Molina** ([@ojesusmp](https://github.com/ojesusmp)).
+
 `line-check` is a behavioral skill for [Claude Code](https://claude.ai/code) that runs a **5-check audit on every changed line** after Write/Edit/MultiEdit, plus a **6-item Pilot Pre-Send Checklist** before every Bash command. It is the line-scope companion to [Andrej Karpathy's task-scope guidelines](https://github.com/forrestchang/andrej-karpathy-skills) — Karpathy gates *what* you do, line-check gates *what you ship*.
 
 ---
@@ -15,7 +17,7 @@
 A real Claude Code session, real waste:
 
 ```text
-PS C:\Users\molin\.claude\projects\D--Claude-Playground> ssh brain "mkdir -p ~/.claude/projects/-home-orlandoj-superbrain && tar -xzf ~/memory.tgz -C
+PS C:\Users\you\projects\demo> ssh remote-host "mkdir -p ~/.claude/projects/myproject && tar -xzf ~/memory.tgz -C
 >>
 ```
 
@@ -106,7 +108,7 @@ Use the line-check skill on the current diff.
 Or before posting a code block:
 
 ```text
-Run line-check on this command before I send it: ssh brain "mkdir -p /tmp/x && tar -xzf foo.tgz -C
+Run line-check on this command before I send it: ssh remote-host "mkdir -p /tmp/x && tar -xzf foo.tgz -C
 ```
 
 ---
@@ -120,7 +122,7 @@ line-check findings (3):
   src/auth.ts:42  — contradiction    — return type `User` but body returns `User | null`
                                        — narrow return or widen signature?
   cmd:bash        — shell-completeness — `-C` flag has no target dir AND closing `"` missing
-                                       — fixed: `ssh brain "… -C ~/.claude/projects/x"`
+                                       — fixed: `ssh remote-host "… -C ~/.claude/projects/x"`
   README.md:14    — fact             — claims Node 18+ but package.json `engines` says 20+
                                        — aligned to 20+
 ```

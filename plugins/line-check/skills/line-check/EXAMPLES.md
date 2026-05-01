@@ -9,7 +9,7 @@ Real cases the skill catches. Each example shows the bad line, why it broke, the
 ### Bad
 
 ```text
-PS C:\Users\molin> ssh brain "mkdir -p ~/.claude/projects/-home-orlandoj-superbrain && tar -xzf ~/memory.tgz -C
+PS C:\Users\you> ssh remote-host "mkdir -p ~/.claude/projects/myproject && tar -xzf ~/memory.tgz -C
 >>
 ```
 
@@ -24,7 +24,7 @@ PS C:\Users\molin> ssh brain "mkdir -p ~/.claude/projects/-home-orlandoj-superbr
 ```text
 line-check findings (1):
   cmd:powershell — shell-completeness — closing `"` missing AND `-C` flag has no target directory
-                                      — fixed: ssh brain "mkdir -p ~/.claude/projects/-home-orlandoj-superbrain && tar -xzf ~/memory.tgz -C ~/.claude/projects/-home-orlandoj-superbrain"
+                                      — fixed: ssh remote-host "mkdir -p ~/.claude/projects/myproject && tar -xzf ~/memory.tgz -C ~/.claude/projects/myproject"
 ```
 
 ### Caught by
@@ -35,7 +35,7 @@ line-check findings (1):
 ### Fix
 
 ```text
-PS C:\Users\molin> ssh brain "mkdir -p ~/.claude/projects/-home-orlandoj-superbrain && tar -xzf ~/memory.tgz -C ~/.claude/projects/-home-orlandoj-superbrain"
+PS C:\Users\you> ssh remote-host "mkdir -p ~/.claude/projects/myproject && tar -xzf ~/memory.tgz -C ~/.claude/projects/myproject"
 ```
 
 Both issues fixed in one line. Command executes.

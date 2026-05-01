@@ -28,7 +28,7 @@ Invoke the skill explicitly when:
 ### Patterns that trigger the skill
 
 - "Use the line-check skill on the current diff."
-- "Run line-check on this command before I send it: `ssh brain "mkdir -p /tmp/x && tar -xzf foo.tgz -C`"
+- "Run line-check on this command before I send it: `ssh remote-host "mkdir -p /tmp/x && tar -xzf foo.tgz -C`"
 - "Apply the 5 checks to the SQL query below."
 - "Stamp the Pilot Checklist on this PowerShell snippet."
 
@@ -97,7 +97,7 @@ line-check findings (4):
   src/auth.ts:58  — syntax           — closing brace missing for `if` block
                                        — fixed in edit
   cmd:bash        — shell-completeness — `-C` flag has no target dir AND closing `"` missing
-                                       — fixed: ssh brain "… -C ~/.claude/projects/x"
+                                       — fixed: ssh remote-host "… -C ~/.claude/projects/x"
   README.md:14    — fact             — claims Node 18+ but package.json `engines` says 20+
                                        — aligned to 20+
 ```

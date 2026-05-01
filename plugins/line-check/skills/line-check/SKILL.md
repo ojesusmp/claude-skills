@@ -12,7 +12,7 @@ Per-line audit pass run immediately after producing any written artifact (code, 
 Real session, real waste:
 
 ```
-PS C:\Users\molin\.claude\projects\D--Claude-Playground> ssh brain "mkdir -p ~/.claude/projects/-home-orlandoj-superbrain && tar -xzf ~/memory.tgz -C
+PS C:\Users\you\projects\demo> ssh remote-host "mkdir -p ~/.claude/projects/myproject && tar -xzf ~/memory.tgz -C
 >>
 ```
 
@@ -154,7 +154,7 @@ When findings exist, report as:
 line-check findings (N):
   path/to/file.ts:42 — contradiction — return type `User` but body returns `User | null` — narrow return or widen signature?
   path/to/file.ts:58 — syntax — closing brace missing for `if` block — fixed in edit
-  cmd:bash — shell-completeness — `-C` flag has no target dir AND closing `"` missing — fixed: `ssh brain "… -C ~/.claude/projects/-home-orlandoj-superbrain"`
+  cmd:bash — shell-completeness — `-C` flag has no target dir AND closing `"` missing — fixed: `ssh remote-host "… -C ~/.claude/projects/myproject"`
   README.md:14 — fact — claims Node 18+ but package.json `engines` says 20+ — aligned to 20+
   src/auth.ts:91 — scope — added telemetry call, not in user request — reverted
 ```
