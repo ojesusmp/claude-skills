@@ -2,6 +2,17 @@
 
 All notable changes to oj-statusline are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] — 2026-04-30
+
+### Fixed
+
+- **Token line is now always rendered**, even on a fresh session before any tokens have been used. Previously `printTokenLine` returned early when `stdin.context_window.current_usage` was missing, which meant the `tok cached:... new:... total:... mcp:Nx hk:Nx` line silently disappeared at session start (only the OMC HUD line and skills line showed up). Now it renders all-zero values instead of a blank line, so users always see the statusline is alive.
+- **Slash command `/oj-statusline:setup` no longer hardcodes `${CLAUDE_PLUGIN_ROOT}`** (which is only substituted in plugin hook commands, not in slash command markdown bodies). It now discovers `install.mjs` at runtime via `find ~/.claude/plugins -path '*oj-statusline*install.mjs'`. This fixes a bug where the previous slash command produced a Windows-style path on Linux/macOS targets and failed with `MODULE_NOT_FOUND`.
+
+### Notes
+
+- Existing installs need to re-pull the marketplace clone and re-run the installer to pick up the fixed `statusline.mjs`. See README for the upgrade recipe.
+
 ## [1.2.1] — 2026-04-30
 
 ### Fixed

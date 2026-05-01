@@ -1,7 +1,7 @@
 {
   "name": "oj-statusline",
   "description": "Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Optionally delegates to oh-my-claudecode HUD when present. Auto-wires on SessionStart -- no manual install step.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "author": {
     "name": "Orlando Molina",
     "url": "https://github.com/ojesusmp"

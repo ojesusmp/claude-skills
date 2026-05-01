@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // PERMANENT - oj-statusline
-// oj-statusline v1.0.0
+// oj-statusline v1.2.2
 /**
  * oj-statusline for Claude Code.
  * Author: Orlando Molina <https://github.com/ojesusmp>
@@ -209,8 +209,7 @@ function printSkillsLine(active) {
 }
 
 function printTokenLine(stdin, mcpCount, hkCount) {
-  const usage = stdin?.context_window?.current_usage;
-  if (!usage) return;
+  const usage = stdin?.context_window?.current_usage || {};
   const cached = usage.cache_read_input_tokens || 0;
   const fresh = (usage.input_tokens || 0) + (usage.cache_creation_input_tokens || 0);
   const total = cached + fresh;
