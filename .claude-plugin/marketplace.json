@@ -6,8 +6,8 @@
     "url": "https://github.com/ojesusmp"
   },
   "metadata": {
-    "description": "Orlando's Claude Code skills marketplace — line-check and future skills, distributed via the native plugin system.",
-    "version": "1.0.0"
+    "description": "Orlando's Claude Code skills marketplace — line-check, oj-statusline, and future skills, distributed via the native plugin system.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -30,6 +30,29 @@
         "karpathy"
       ],
       "category": "code-quality"
+    },
+    {
+      "name": "oj-statusline",
+      "source": "./plugins/oj-statusline",
+      "description": "Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Optionally delegates to oh-my-claudecode HUD when present. Single-file Node.js, zero deps.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Orlando Molina",
+        "url": "https://github.com/ojesusmp"
+      },
+      "keywords": [
+        "statusline",
+        "claude-code",
+        "hud",
+        "tokens",
+        "context-window",
+        "mcp",
+        "hooks",
+        "skills",
+        "ui",
+        "observability"
+      ],
+      "category": "ui"
     }
   ]
 }

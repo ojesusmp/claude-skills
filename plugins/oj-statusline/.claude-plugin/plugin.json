@@ -1,0 +1,25 @@
+{
+  "name": "oj-statusline",
+  "description": "Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Optionally delegates to oh-my-claudecode HUD when present. Single-file Node.js, zero deps.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Orlando Molina",
+    "url": "https://github.com/ojesusmp"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/ojesusmp/claude-skills/tree/main/plugins/oj-statusline",
+  "repository": "https://github.com/ojesusmp/claude-skills",
+  "keywords": [
+    "statusline",
+    "claude-code",
+    "hud",
+    "tokens",
+    "context-window",
+    "mcp",
+    "hooks",
+    "skills",
+    "ui",
+    "observability"
+  ],
+  "skills": ["./skills/oj-statusline"]
+}
