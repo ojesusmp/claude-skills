@@ -2,11 +2,22 @@
 
 All notable changes to oj-statusline are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] — 2026-04-30
+
+### Fixed
+
+- **Slash command name corrected to `/oj-statusline:setup`**. Claude Code namespaces plugin slash commands as `/<plugin-name>:<command-name>`, so v1.2.0's `/oj-statusline-setup` was unreachable as typed. Renamed `commands/oj-statusline-setup.md` to `commands/setup.md` so the registered command resolves to `/oj-statusline:setup`. README, INSTALLATION.md, and CHANGELOG updated to match.
+- **Removed bogus `"commands": ["./commands"]` field from plugin.json**. Claude Code auto-discovers `commands/` by directory convention; the explicit array was a guess from documentation that does not match the live plugin loader (verified against `commit-commands` and similar working plugins).
+
+### Notes
+
+- The slash command only registers once the plugin is in `enabledPlugins` of `~/.claude/settings.json`. If `/oj-statusline:setup` is missing on a target machine, run `/plugin install oj-statusline@claude-skills` first; restart Claude Code; then the command becomes available.
+
 ## [1.2.0] — 2026-04-30
 
 ### Added
 
-- **`/oj-statusline-setup` slash command**. Bundled in the plugin's `commands/` directory. Runs the installer in verbose mode and walks the user through the restart cycle. Use this if the SessionStart hook did not fire, or to recover from a broken statusline.
+- **`/oj-statusline:setup` slash command**. Bundled in the plugin's `commands/` directory. Runs the installer in verbose mode and walks the user through the restart cycle. Use this if the SessionStart hook did not fire, or to recover from a broken statusline.
 - **First-run `additionalContext` prompt**. On the first session after `/plugin install`, the SessionStart hook emits a single-line `hookSpecificOutput` JSON message telling the user to restart Claude Code so the new `statusLine` takes effect. After the marker file is written, every subsequent session start is silent.
 - **Marker file `~/.claude/hud/.oj-statusline-bootstrapped`**. Distinguishes first-run from subsequent runs. Removed by the uninstaller.
 
@@ -28,7 +39,7 @@ All notable changes to oj-statusline are documented in this file. Format follows
 ### Notes
 
 - First install on a fresh machine is now: `/plugin install oj-statusline@claude-skills` → restart Claude Code → SessionStart hook patches `settings.json` and emits restart prompt → restart again → statusline appears. Two restarts is a fundamental Claude Code limitation: `statusLine.command` is read once at session start, before plugin SessionStart hooks have a chance to write it.
-- To collapse to a single restart, run `/oj-statusline-setup` (or the manual `node install.mjs`) before the first restart.
+- To collapse to a single restart, run `/oj-statusline:setup` (or the manual `node install.mjs`) before the first restart.
 
 ## [1.1.0] — 2026-04-30
 

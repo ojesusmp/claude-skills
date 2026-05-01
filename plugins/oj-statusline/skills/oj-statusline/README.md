@@ -13,12 +13,12 @@ Built by **Orlando Molina** ([@ojesusmp](https://github.com/ojesusmp)).
 ```text
 /plugin marketplace add ojesusmp/claude-skills
 /plugin install oj-statusline@claude-skills
-/oj-statusline-setup
+/oj-statusline:setup
 ```
 
 Then fully quit and reopen Claude Code once. The new statusline appears on the next session start.
 
-If you skip `/oj-statusline-setup`, the bundled `SessionStart` hook still wires everything on the first restart — but Claude Code reads `statusLine.command` once at session start, so a **second** restart is needed to actually pick up the new command. The slash command collapses that to a single restart. Both paths are idempotent, no manual `node install.mjs` step. Uninstall reverses the changes — see [INSTALLATION.md](./INSTALLATION.md).
+If you skip `/oj-statusline:setup`, the bundled `SessionStart` hook still wires everything on the first restart — but Claude Code reads `statusLine.command` once at session start, so a **second** restart is needed to actually pick up the new command. The slash command collapses that to a single restart. Both paths are idempotent, no manual `node install.mjs` step. Uninstall reverses the changes — see [INSTALLATION.md](./INSTALLATION.md).
 
 ---
 
