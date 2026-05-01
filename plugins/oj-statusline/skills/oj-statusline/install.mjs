@@ -4,16 +4,24 @@
  * Author: Orlando Molina <https://github.com/ojesusmp>
  * License: MIT
  *
- * Copies statusline.mjs to ~/.claude/hud/oj-statusline.mjs and patches
- * settings.json statusLine.command. Idempotent. Safe re-run.
+ * Modes:
+ *   node install.mjs                install or update (verbose)
+ *   node install.mjs --hook         SessionStart hook mode: silent if already
+ *                                    installed; otherwise install + emit JSON
+ *                                    additionalContext prompting a restart.
+ *                                    Always exits 0 so CC never blocks startup.
+ *   node install.mjs --check        print state, no changes
+ *   node install.mjs --uninstall    remove and restore prior command if backed up
  *
- * Usage:
- *   node install.mjs            install or update
- *   node install.mjs --check    print state, no changes
- *   node install.mjs --uninstall remove and restore prior command if backed up
+ * The --hook mode is what the plugin manifest calls on SessionStart. It is
+ * idempotent: after the first successful install, every subsequent session
+ * start is a no-op with no console output. On first install, it writes the
+ * settings.json statusLine, copies the runtime, drops a marker file, and
+ * prints a single-line additionalContext telling the user to restart Claude
+ * Code so the new statusLine takes effect.
  */
 
-import { existsSync, readFileSync, writeFileSync, copyFileSync, mkdirSync, unlinkSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, copyFileSync, mkdirSync, unlinkSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,14 +33,26 @@ const CFG_DIR = process.env.CLAUDE_CONFIG_DIR || join(HOME, ".claude");
 const HUD_DIR = join(CFG_DIR, "hud");
 const DEST = join(HUD_DIR, "oj-statusline.mjs");
 const SETTINGS = join(CFG_DIR, "settings.json");
+const MARKER = join(HUD_DIR, ".oj-statusline-bootstrapped");
 const DESIRED_COMMAND = `node "${DEST}"`;
 const BACKUP_KEY = "_ojStatuslinePriorCommand";
+
+const arg = process.argv[2];
+const HOOK = arg === "--hook";
+
+function log(...a) { if (!HOOK) console.log(...a); }
+function err(...a) { console.error(...a); }
+
+function emitHookContext(text) {
+  const payload = { hookSpecificOutput: { hookEventName: "SessionStart", additionalContext: text } };
+  process.stdout.write(JSON.stringify(payload));
+}
 
 function readSettings() {
   if (!existsSync(SETTINGS)) return {};
   try { return JSON.parse(readFileSync(SETTINGS, "utf8")); } catch (e) {
-    console.error(`Cannot parse ${SETTINGS}: ${e.message}`);
-    process.exit(1);
+    err(`oj-statusline: cannot parse ${SETTINGS}: ${e.message}`);
+    return null;
   }
 }
 
@@ -40,60 +60,105 @@ function writeSettings(obj) {
   writeFileSync(SETTINGS, JSON.stringify(obj, null, 2) + "\n", "utf8");
 }
 
+function srcMatches() {
+  if (!existsSync(SRC) || !existsSync(DEST)) return false;
+  try { return statSync(SRC).size === statSync(DEST).size && readFileSync(SRC, "utf8") === readFileSync(DEST, "utf8"); }
+  catch { return false; }
+}
+
+function isCorrectlyWired(s) {
+  return s && s.statusLine && s.statusLine.command === DESIRED_COMMAND && existsSync(DEST) && srcMatches();
+}
+
 function check() {
   console.log(`config dir:   ${CFG_DIR}`);
   console.log(`hud script:   ${DEST} ${existsSync(DEST) ? "[present]" : "[missing]"}`);
-  const s = readSettings();
-  const cur = s.statusLine?.command;
-  console.log(`statusLine:   ${cur || "<none>"}`);
-  console.log(`installed:    ${cur === DESIRED_COMMAND ? "yes" : "no"}`);
+  console.log(`runtime sync: ${srcMatches() ? "yes" : "no (will copy on install)"}`);
+  const s = readSettings() || {};
+  console.log(`statusLine:   ${s.statusLine?.command || "<none>"}`);
+  console.log(`installed:    ${isCorrectlyWired(s) ? "yes" : "no"}`);
+  console.log(`marker:       ${existsSync(MARKER) ? "present" : "absent"}`);
   if (s[BACKUP_KEY]) console.log(`prior backup: ${s[BACKUP_KEY]}`);
 }
 
-function install() {
+function doInstall({ silent }) {
   if (!existsSync(SRC)) {
-    console.error(`source missing: ${SRC}`);
-    process.exit(1);
+    err(`oj-statusline: source missing: ${SRC}`);
+    return { ok: false, firstRun: false };
   }
   if (!existsSync(HUD_DIR)) mkdirSync(HUD_DIR, { recursive: true });
-  copyFileSync(SRC, DEST);
-  console.log(`copied: ${SRC} -> ${DEST}`);
+
+  const firstRun = !existsSync(MARKER);
+
+  if (!srcMatches()) {
+    copyFileSync(SRC, DEST);
+    if (!silent) log(`copied: ${SRC} -> ${DEST}`);
+  }
 
   const s = readSettings();
+  if (s === null) return { ok: false, firstRun };
+
+  let settingsChanged = false;
   const prior = s.statusLine?.command;
   if (prior && prior !== DESIRED_COMMAND && !s[BACKUP_KEY]) {
     s[BACKUP_KEY] = prior;
-    console.log(`backed up prior command: ${prior}`);
+    if (!silent) log(`backed up prior command: ${prior}`);
+    settingsChanged = true;
   }
-  s.statusLine = { type: "command", command: DESIRED_COMMAND };
-  writeSettings(s);
-  console.log(`patched ${SETTINGS} statusLine.command`);
-  console.log(`done. restart Claude Code to apply.`);
+  if (!s.statusLine || s.statusLine.command !== DESIRED_COMMAND) {
+    s.statusLine = { type: "command", command: DESIRED_COMMAND };
+    settingsChanged = true;
+  }
+  if (settingsChanged) {
+    writeSettings(s);
+    if (!silent) log(`patched ${SETTINGS} statusLine.command`);
+  }
+
+  if (firstRun) writeFileSync(MARKER, new Date().toISOString() + "\n", "utf8");
+
+  return { ok: true, firstRun };
 }
 
 function uninstall() {
-  const s = readSettings();
+  const s = readSettings() || {};
   if (s.statusLine?.command === DESIRED_COMMAND) {
     if (s[BACKUP_KEY]) {
       s.statusLine = { type: "command", command: s[BACKUP_KEY] };
-      console.log(`restored prior command: ${s[BACKUP_KEY]}`);
+      log(`restored prior command: ${s[BACKUP_KEY]}`);
       delete s[BACKUP_KEY];
     } else {
       delete s.statusLine;
-      console.log(`cleared statusLine (no prior backup)`);
+      log(`cleared statusLine (no prior backup)`);
     }
     writeSettings(s);
   } else {
-    console.log(`statusLine.command was not ours; left untouched`);
+    log(`statusLine.command was not ours; left untouched`);
   }
-  if (existsSync(DEST)) {
-    unlinkSync(DEST);
-    console.log(`removed: ${DEST}`);
-  }
-  console.log(`done. restart Claude Code to apply.`);
+  if (existsSync(DEST)) { unlinkSync(DEST); log(`removed: ${DEST}`); }
+  if (existsSync(MARKER)) { unlinkSync(MARKER); log(`removed: ${MARKER}`); }
+  log(`done. restart Claude Code to apply.`);
 }
 
-const arg = process.argv[2];
-if (arg === "--check") check();
+function hookMode() {
+  const sBefore = readSettings();
+  if (isCorrectlyWired(sBefore) && existsSync(MARKER)) {
+    process.exit(0);
+  }
+  const { ok, firstRun } = doInstall({ silent: true });
+  if (!ok) process.exit(0);
+  if (firstRun) {
+    emitHookContext(
+      "[oj-statusline] First-time setup complete. Statusline runtime copied to ~/.claude/hud/oj-statusline.mjs and settings.json statusLine.command wired. Restart Claude Code one more time so the new statusLine takes effect."
+    );
+  }
+  process.exit(0);
+}
+
+if (HOOK) hookMode();
+else if (arg === "--check") check();
 else if (arg === "--uninstall") uninstall();
-else install();
+else {
+  const { ok, firstRun } = doInstall({ silent: false });
+  if (!ok) process.exit(1);
+  log(firstRun ? "done. restart Claude Code to activate the statusline." : "already up to date. no changes made.");
+}

@@ -21,7 +21,15 @@ Then restart Claude Code. The plugin's `SessionStart` hook auto-runs `install.mj
 
 Claude Code reads `settings.json` once at session start and applies `statusLine.command` for the duration of that session. The auto-wire hook patches the file *during* the first restart's session start, so the new statusLine takes effect on the **next** restart. After that, all subsequent restarts use the new statusline immediately.
 
-If you want it active in a single restart: run the manual installer below before the first restart.
+If you want it active in a single restart, the easiest path is the bundled slash command:
+
+```text
+/oj-statusline-setup
+```
+
+Run it inside Claude Code right after `/plugin install`. It invokes the installer in verbose mode, then prompts you to fully quit and reopen Claude Code. The new statusline appears on the next session start.
+
+The manual `node install.mjs` invocation below is the same flow without the slash command.
 
 ## Manual install — without the marketplace
 
@@ -99,6 +107,7 @@ You do **not** need to install OMC. `oj-statusline` works standalone.
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
+| No statusline after `/plugin install` + restart | Plugin SessionStart hook ran but you have not yet done the second restart Claude Code needs to pick up the new `statusLine` | Run `/oj-statusline-setup` to confirm wiring, then fully quit and reopen Claude Code one more time |
 | Statusline blank | Node 18+ not on `PATH` for Claude Code | Verify `node --version` from the same shell that launches Claude Code |
 | `cannot parse settings.json` | Hand-edited JSON is malformed | Open `~/.claude/settings.json`, validate with a JSON linter, fix and re-run |
 | Skills line missing | `enabledPlugins` is empty in settings | Install at least one plugin via `/plugin install` |

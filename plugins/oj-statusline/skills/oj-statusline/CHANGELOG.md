@@ -2,6 +2,34 @@
 
 All notable changes to oj-statusline are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] — 2026-04-30
+
+### Added
+
+- **`/oj-statusline-setup` slash command**. Bundled in the plugin's `commands/` directory. Runs the installer in verbose mode and walks the user through the restart cycle. Use this if the SessionStart hook did not fire, or to recover from a broken statusline.
+- **First-run `additionalContext` prompt**. On the first session after `/plugin install`, the SessionStart hook emits a single-line `hookSpecificOutput` JSON message telling the user to restart Claude Code so the new `statusLine` takes effect. After the marker file is written, every subsequent session start is silent.
+- **Marker file `~/.claude/hud/.oj-statusline-bootstrapped`**. Distinguishes first-run from subsequent runs. Removed by the uninstaller.
+
+### Changed
+
+- **`install.mjs --hook` mode**. Plugin manifest now invokes the installer with `--hook`, which:
+  - Exits silently with no stdout output once the install is correctly wired (no log spam every session).
+  - Emits valid JSON on stdout only on first run, conforming to Claude Code's `hookSpecificOutput` contract.
+  - Always exits 0 so a broken install never blocks Claude Code startup.
+- **Hook timeout raised to 30s** (was 5s). Cold Node.js startup on Windows can exceed 5s on first run; 30s is a safe ceiling that still fails fast on a hung process.
+- **`install.mjs` (verbose mode)** now detects "already up to date" and prints a single line instead of repeating copy/patch noise.
+- Content-aware copy: the runtime is only re-copied when `statusline.mjs` actually differs from the destination, so plugin updates pick up new versions while idle sessions skip the disk write entirely.
+
+### Fixed
+
+- v1.1.0 hook ran `install.mjs` in interactive mode every session, printing 3 lines of `console.log` output that Claude Code's hook parser treated as malformed JSON. v1.2.0 cleanly separates verbose (CLI) and machine (hook) output paths.
+- Hook timeout was previously too tight for cold-start Windows Node.js on slower disks; raised to 30s.
+
+### Notes
+
+- First install on a fresh machine is now: `/plugin install oj-statusline@claude-skills` → restart Claude Code → SessionStart hook patches `settings.json` and emits restart prompt → restart again → statusline appears. Two restarts is a fundamental Claude Code limitation: `statusLine.command` is read once at session start, before plugin SessionStart hooks have a chance to write it.
+- To collapse to a single restart, run `/oj-statusline-setup` (or the manual `node install.mjs`) before the first restart.
+
 ## [1.1.0] — 2026-04-30
 
 ### Added

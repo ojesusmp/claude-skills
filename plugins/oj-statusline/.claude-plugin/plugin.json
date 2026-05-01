@@ -1,7 +1,7 @@
 {
   "name": "oj-statusline",
-  "description": "Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Optionally delegates to oh-my-claudecode HUD when present. Auto-wires on SessionStart — no manual install step.",
-  "version": "1.1.0",
+  "description": "Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Optionally delegates to oh-my-claudecode HUD when present. Auto-wires on SessionStart -- no manual install step.",
+  "version": "1.2.0",
   "author": {
     "name": "Orlando Molina",
     "url": "https://github.com/ojesusmp"
@@ -22,15 +22,15 @@
     "observability"
   ],
   "skills": ["./skills/oj-statusline"],
+  "commands": ["./commands"],
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/oj-statusline/install.mjs\"",
-            "timeout": 5,
-            "statusMessage": "Wiring oj-statusline..."
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/oj-statusline/install.mjs\" --hook",
+            "timeout": 30
           }
         ]
       }
