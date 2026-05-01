@@ -13,13 +13,15 @@
 /plugin install oj-statusline@claude-skills
 ```
 
-After install, locate the bundled installer and run it once to wire `settings.json`:
+Then restart Claude Code. The plugin's `SessionStart` hook auto-runs `install.mjs` on the first session restart, which wires `~/.claude/settings.json` `statusLine.command` and copies the runtime to `~/.claude/hud/oj-statusline.mjs`. Both are idempotent.
 
-```sh
-node ~/.claude/plugins/cache/claude-skills/oj-statusline/1.0.0/skills/oj-statusline/install.mjs
-```
+**Total user steps: 2 commands + 1 restart.** No manual `node` invocation required.
 
-Then restart Claude Code (close and reopen the CLI/IDE session).
+### Why two restarts may be needed on the very first install
+
+Claude Code reads `settings.json` once at session start and applies `statusLine.command` for the duration of that session. The auto-wire hook patches the file *during* the first restart's session start, so the new statusLine takes effect on the **next** restart. After that, all subsequent restarts use the new statusline immediately.
+
+If you want it active in a single restart: run the manual installer below before the first restart.
 
 ## Manual install — without the marketplace
 

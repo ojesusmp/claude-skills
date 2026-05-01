@@ -38,7 +38,7 @@ Update plugins:
 | Plugin | Version | Description |
 |--------|---------|-------------|
 | **[line-check](./plugins/line-check)** | 1.0.0 | Per-line audit skill catching shell continuation-prompt traps across PowerShell, bash, Python, Rust, C, and TypeScript. 5 checks + 6-item Pilot Pre-Send Checklist. |
-| **[oj-statusline](./plugins/oj-statusline)** | 1.0.0 | Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Optionally delegates to oh-my-claudecode HUD when present. |
+| **[oj-statusline](./plugins/oj-statusline)** | 1.1.0 | Multi-line Claude Code statusline showing token breakdown (cached/new/total/ctx%), MCP and hook counts, and a soft-wrapped list of enabled skills with active-skill highlight. Auto-wires on SessionStart — `/plugin install` then restart, done. |
 
 ## What is `line-check`?
 

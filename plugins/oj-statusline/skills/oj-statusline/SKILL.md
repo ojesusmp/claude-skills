@@ -37,17 +37,24 @@ Long plugin lists used to push token/HUD info off-screen on narrow terminals (ha
 
 ## Install
 
-Run on any fresh machine:
+Two commands inside Claude Code, then restart:
 
-```sh
-node ~/.claude/plugins/cache/claude-skills/oj-statusline/1.0.0/skills/oj-statusline/install.mjs
+```text
+/plugin marketplace add ojesusmp/claude-skills
+/plugin install oj-statusline@claude-skills
 ```
 
-The installer:
-1. Copies `statusline.mjs` to `~/.claude/hud/oj-statusline.mjs`
-2. Sets `statusLine.command` in `~/.claude/settings.json` to that path
-3. Idempotent — safe to re-run
-4. Backs up any prior `statusLine.command` under `_ojStatuslinePriorCommand` for safe uninstall
+Restart Claude Code. The plugin's `SessionStart` hook auto-runs `install.mjs` (idempotent) and the statusline activates on the next session start.
+
+> **Note**: the SessionStart hook patches `~/.claude/settings.json` `statusLine.command` and copies the runtime to `~/.claude/hud/oj-statusline.mjs`. Both are reversible via the uninstaller below.
+
+### Manual install (advanced / CI)
+
+If you want explicit control or are scripting CI setup, run the installer directly:
+
+```sh
+node "$(find ~/.claude/plugins -path '*oj-statusline*install.mjs' | head -1)"
+```
 
 Check current state without changing anything:
 

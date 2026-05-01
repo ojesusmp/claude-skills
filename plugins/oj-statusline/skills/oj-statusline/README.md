@@ -8,6 +8,15 @@
 
 Built by **Orlando Molina** ([@ojesusmp](https://github.com/ojesusmp)).
 
+## Install (2 commands + 1 restart)
+
+```text
+/plugin marketplace add ojesusmp/claude-skills
+/plugin install oj-statusline@claude-skills
+```
+
+Then restart Claude Code. A `SessionStart` hook bundled with the plugin auto-wires `settings.json` (idempotently). No manual `node install.mjs` step. Uninstall reverses the changes — see [INSTALLATION.md](./INSTALLATION.md).
+
 ---
 
 ## TL;DR

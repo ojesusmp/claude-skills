@@ -2,6 +2,22 @@
 
 All notable changes to oj-statusline are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-04-30
+
+### Added
+
+- **Auto-wire on SessionStart**. Plugin manifest now declares a `SessionStart` hook that runs `install.mjs` idempotently every session. This eliminates the manual `node <path>/install.mjs` step on first install. After `/plugin install oj-statusline@claude-skills`, restart Claude Code once and the statusline activates.
+
+### Changed
+
+- `INSTALLATION.md` simplified — manual installer step is now optional (advanced/CI use cases only).
+- `README.md` install section reduced to two commands.
+
+### Notes
+
+- Hook uses `${CLAUDE_PLUGIN_ROOT}` substitution for the install.mjs path. Requires Claude Code 1.x or newer with plugin-declared hooks support.
+- The installer remains idempotent — running it multiple times produces no extra changes after the first successful run.
+
 ## [1.0.0] — 2026-04-30
 
 ### Added
